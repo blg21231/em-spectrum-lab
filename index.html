@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spectrum Lab — the invisible ocean of waves you live inside</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b1020'/%3E%3Cpath d='M3 16 Q7 6 11 16 T19 16 T27 16' fill='none' stroke='%2362d0ff' stroke-width='2'/%3E%3Cpath d='M5 22 Q9 16 13 22 T21 22' fill='none' stroke='%23ff9e5e' stroke-width='1.6' opacity='0.8'/%3E%3C/svg%3E" />
+    <meta
+      name="description"
+      content="An interactive, simulation-driven exploratorium of the electromagnetic spectrum (plus mechanical sound, kept distinct) flooding a typical room — and why that superposition of waves resolves into working vision, hearing, and wireless rather than chaos."
+    />
+    <style>
+      :root {
+        --bg: #070b14;
+        --bg2: #0c1322;
+        --panel: #111a2c;
+        --ink: #e8eef9;
+        --ink-dim: #93a1bf;
+        --accent: #62d0ff;
+        --accent2: #ff9e5e;
+        --established: #3fb68b;
+        --engineering-convention: #62d0ff;
+        --model-simplification: #b48cff;
+        --order-of-magnitude: #ffb86e;
+        --misconception-corrected: #ff7e96;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      #app { max-width: 1100px; margin: 0 auto; padding: 0 20px 80px; }
+      header.site { display: flex; align-items: center; gap: 14px; padding: 18px 0; flex-wrap: wrap; }
+      header.site h1 { font-size: 1.05rem; margin: 0; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-dim); font-weight: 600; }
+      header.site h1 a { color: var(--ink); }
+      nav.modules { display: flex; gap: 4px 10px; flex-wrap: wrap; padding: 4px 0 14px; }
+      nav.modules a { font-size: 0.82rem; padding: 4px 10px; border-radius: 999px; background: var(--bg2); color: var(--ink-dim); white-space: nowrap; }
+      nav.modules a.active { background: var(--accent); color: #06101f; font-weight: 600; }
+      nav.modules a:hover { text-decoration: none; color: var(--ink); }
+      nav.modules a.active:hover { color: #06101f; }
+      h2.module-title { font-size: 1.9rem; margin: 18px 0 4px; line-height: 1.2; }
+      p.module-sub { color: var(--ink-dim); margin: 0 0 18px; max-width: 72ch; }
+      .question-banner { border: 1px solid #243049; background: linear-gradient(180deg, #0f1727, #0b1120); border-radius: 12px; padding: 14px 18px; margin: 14px 0; }
+      .question-banner .qid { color: var(--accent2); font-weight: 700; margin-right: 8px; }
+      .question-banner .qanswer { display: block; margin-top: 8px; color: var(--ink-dim); font-size: 0.92rem; }
+      section[data-panel] { background: var(--panel); border: 1px solid #1c2538; border-radius: 14px; padding: 18px 22px; margin: 16px 0; }
+      section[data-panel] h3 { margin: 0 0 6px; font-size: 1.12rem; }
+      section[data-panel] p { margin: 8px 0 0; color: #c8d2e6; }
+      .tag-chip { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 10px; border-radius: 999px; margin-bottom: 8px; color: #0a0f1a; }
+      .tag-established { background: var(--established); }
+      .tag-engineering-convention { background: var(--engineering-convention); }
+      .tag-model-simplification { background: var(--model-simplification); }
+      .tag-order-of-magnitude { background: var(--order-of-magnitude); }
+      .tag-misconception-corrected { background: var(--misconception-corrected); }
+      .scene { position: relative; background: #04060c; border: 1px solid #1c2538; border-radius: 14px; margin: 18px 0; overflow: hidden; }
+      .scene canvas { display: block; width: 100%; height: auto; }
+      .controls { display: flex; gap: 16px 26px; flex-wrap: wrap; align-items: center; padding: 12px 16px; background: var(--bg2); border-top: 1px solid #1c2538; }
+      .controls label { font-size: 0.82rem; color: var(--ink-dim); display: flex; flex-direction: column; gap: 4px; min-width: 120px; }
+      .controls label b { color: var(--ink); font-variant-numeric: tabular-nums; }
+      .controls input[type="range"] { width: 160px; max-width: 40vw; accent-color: var(--accent); }
+      .controls button { background: var(--accent); color: #06101f; border: 0; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+      .controls button.secondary { background: #243049; color: var(--ink); }
+      .controls button.active { background: var(--accent2); color: #1a0f06; }
+      .readout { font-variant-numeric: tabular-nums; color: var(--accent2); }
+      .data-list { margin: 10px 0 0; padding: 0; list-style: none; font-size: 0.85rem; }
+      .data-list li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid #1c2538; padding: 4px 0; color: var(--ink-dim); }
+      .data-list li b { color: var(--ink); font-variant-numeric: tabular-nums; }
+      .data-list li .prov { color: #5c6a88; font-size: 0.74rem; }
+      .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin: 20px 0; }
+      .cards a.card { background: var(--panel); border: 1px solid #1c2538; border-radius: 14px; padding: 16px 18px; color: var(--ink); display: block; }
+      .cards a.card:hover { border-color: var(--accent); text-decoration: none; }
+      .cards a.card h3 { margin: 0 0 6px; font-size: 1.02rem; }
+      .cards a.card p { margin: 0; font-size: 0.85rem; color: var(--ink-dim); }
+      .qlist { margin: 8px 0 30px; padding: 0; list-style: none; }
+      .qlist li { margin: 10px 0; }
+      footer.site { margin-top: 60px; color: var(--ink-dim); font-size: 0.8rem; border-top: 1px solid #1c2538; padding-top: 16px; }
+      .refs { font-size: 0.78rem; color: var(--ink-dim); margin-top: 10px; }
+      @media (max-width: 480px) {
+        h2.module-title { font-size: 1.4rem; }
+        .controls input[type="range"] { width: 120px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
